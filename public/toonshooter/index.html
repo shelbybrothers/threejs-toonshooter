@@ -944,11 +944,20 @@
 	  /* PUBG-style centre crosshair (third-person, in a match) */
 	  #crosshair {
 	    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-	    width: 7px; height: 7px; border-radius: 50%;
-	    background: rgba(255, 255, 255, 0.95);
-	    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.55), 0 0 7px rgba(0, 0, 0, 0.5);
+	    width: 22px; height: 22px; border-radius: 50%;
+	    border: 2px solid rgba(255, 255, 255, 0.9);
+	    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(0, 0, 0, 0.35);
 	    display: none; pointer-events: none; z-index: 15;
+	    transition: width .08s ease, height .08s ease, border-color .08s ease;
 	  }
+	  #crosshair::after {
+	    content: ''; position: absolute; left: 50%; top: 50%;
+	    width: 3px; height: 3px; border-radius: 50%;
+	    background: rgba(255, 255, 255, 0.95); transform: translate(-50%, -50%);
+	    box-shadow: 0 0 2px rgba(0, 0, 0, 0.85);
+	  }
+	  #crosshair.hot { width: 27px; height: 27px; border-color: #ff3b30; box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 0 10px rgba(255,59,48,0.6); }
+	  #crosshair.hot::after { background: #ff3b30; }
 	  body.cam-tps #hud[data-mode="playing"] #crosshair { display: block; }
 	  #lookHint {
 	    position: absolute; left: 50%; bottom: 22%; transform: translateX(-50%);
@@ -4227,15 +4236,21 @@
         const shouldFire = weapon.auto ? input.mouse.down : input.mouse.justPressed;
 
         if (settings.cameraMode === 'tps') {
-          // WORLD-relative movement: move freely in any direction (strafe/backpedal), no
-          // camera-feedback spin. The BODY turns to face where it moves (so it isn't locked
-          // facing the camera); the CAMERA eases in behind gently (smooth, not dizzy).
-          const wd = new THREE.Vector3();
-          if (input.keys['KeyW'] || input.keys['ArrowUp']) wd.z -= 1;
-          if (input.keys['KeyS'] || input.keys['ArrowDown']) wd.z += 1;
-          if (input.keys['KeyA'] || input.keys['ArrowLeft']) wd.x -= 1;
-          if (input.keys['KeyD'] || input.keys['ArrowRight']) wd.x += 1;
-          if (IS_TOUCH && input.touchMove.active) { wd.x += input.touchMove.x; wd.z += input.touchMove.y; }
+          // CAMERA-RELATIVE movement built from the SAME basis the camera uses, so the
+          // keys always match the screen: W = into the screen, S = toward you, A = screen-
+          // LEFT, D = screen-RIGHT — no matter which way the camera is pointing. The camera
+          // is aimed with the mouse (PUBG-style) and also trails in gently behind you when
+          // you move forward; pure strafing (A/D) never makes it spin or feel dizzy.
+          const cy = input.look.yaw;
+          const cs = Math.sin(cy), cc = Math.cos(cy);       // camera forward = (cs, cc)
+          //                                                    screen-right   = (-cc, cs)
+          let f = 0, r = 0;
+          if (input.keys['KeyW'] || input.keys['ArrowUp']) f += 1;
+          if (input.keys['KeyS'] || input.keys['ArrowDown']) f -= 1;
+          if (input.keys['KeyA'] || input.keys['ArrowLeft']) r += 1;   // A = screen-LEFT
+          if (input.keys['KeyD'] || input.keys['ArrowRight']) r -= 1;  // D = screen-RIGHT
+          if (IS_TOUCH && input.touchMove.active) { f += -input.touchMove.y; r -= input.touchMove.x; }
+          const wd = new THREE.Vector3(cs * f + cc * r, 0, cc * f - cs * r);
           const moving = wd.lengthSq() > 1e-4;
           if (moving) wd.normalize();
           applyMovement(player, wd, dt);
@@ -4245,23 +4260,66 @@
           const aiming = input.look.steerTimer > 0;
           if (aiming) input.look.steerTimer -= dt;
 
-          // Body faces the aim (when aiming) or the movement direction — turned smoothly.
+          // ---- AIM: shots ALWAYS follow the centre crosshair ----
+          // Raycast from the camera through screen-centre (exactly where the crosshair is)
+          // onto the arena floor; bullets travel toward that world point, so what you put
+          // the crosshair on is what you hit. Falls back to straight-ahead when looking up.
+          const camFwd = new THREE.Vector3(cs, 0, cc);
+          let aimPoint = null;
+          raycaster.setFromCamera({ x: 0, y: 0 }, world.camera);
+          const gpt = new THREE.Vector3();
+          if (raycaster.ray.intersectPlane(groundPlane, gpt)) {
+            gpt.y = 0;
+            if (gpt.clone().sub(player.position).dot(camFwd) > 0) aimPoint = gpt;
+          }
+          if (!aimPoint) aimPoint = player.position.clone().addScaledVector(camFwd, 40);
+          aimPoint.x = THREE.MathUtils.clamp(aimPoint.x, CONFIG.arena.bounds.minX, CONFIG.arena.bounds.maxX);
+          aimPoint.z = THREE.MathUtils.clamp(aimPoint.z, CONFIG.arena.bounds.minZ, CONFIG.arena.bounds.maxZ);
+          const fireDir = aimPoint.clone().sub(player.position); fireDir.y = 0;
+          if (fireDir.lengthSq() < 1e-4) fireDir.copy(camFwd);
+          fireDir.normalize();
+          const aimYaw = Math.atan2(fireDir.x, fireDir.z);
+
+          // Body turns to FACE the crosshair while shooting (or manually aiming) so the
+          // character visibly shoots where you aim; otherwise it faces where you move.
+          if (shouldFire) player.aimHold = 0.5;
+          if (player.aimHold > 0) player.aimHold -= dt;
+          const stance = aiming || player.aimHold > 0;
           let bodyTarget = player.yaw;
-          if (aiming) bodyTarget = input.look.yaw;
+          if (stance) bodyTarget = aimYaw;
           else if (moving) bodyTarget = Math.atan2(wd.x, wd.z);
-          player.yaw = rotateToward(player.yaw, bodyTarget, 10 * dt);
+          player.yaw = rotateToward(player.yaw, bodyTarget, (stance ? 16 : 12) * dt);
           player.group.rotation.y = player.yaw + MODEL_YAW_OFFSET;
 
-          // Camera eases in behind the body VERY gently, with a deadzone so small steps
-          // don't swing it (this is what was causing the dizziness).
-          if (!aiming) {
-            const camDiff = Math.abs(((player.yaw - input.look.yaw + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
-            if (camDiff > 0.18) input.look.yaw = rotateToward(input.look.yaw, player.yaw, 1.5 * dt);
+          // Gentle "trail-behind" auto-follow: recenter the camera only from the FORWARD
+          // part of the move, so sidestepping (A/D) or backing up (S) never swings the view.
+          if (!aiming && moving) {
+            const fwdDot = wd.x * cs + wd.z * cc;           // 1=forward, 0=strafe, <0=back
+            if (fwdDot > 0.35) {
+              const moveYaw = Math.atan2(wd.x, wd.z);
+              const d = Math.abs(((moveYaw - input.look.yaw + Math.PI * 3) % (Math.PI * 2)) - Math.PI);
+              if (d > 0.05) input.look.yaw = rotateToward(input.look.yaw, moveYaw, 1.5 * fwdDot * dt);
+            }
           }
 
-          const fireDir = new THREE.Vector3(Math.sin(player.yaw), 0, Math.cos(player.yaw));
-          if (player.team === 'p1' && world.reticle) {
-            world.reticle.position.set(player.position.x + fireDir.x * 6, 0.02, player.position.z + fireDir.z * 6);
+          // Ground reticle marks the aim point; crosshair turns RED when a shot would hit.
+          if (player.team === 'p1') {
+            if (world.reticle) world.reticle.position.set(aimPoint.x, 0.02, aimPoint.z);
+            world.crosshairEl = world.crosshairEl || document.getElementById('crosshair');
+            if (world.crosshairEl) {
+              let hot = false;
+              const rr = (CONFIG.player.radius + 0.55) * (CONFIG.player.radius + 0.55);
+              for (let i = 0; i < world.entities.length; i++) {
+                const e = world.entities[i];
+                if (!e || e === player || e.isDead || e.eliminated) continue;
+                const rx = e.position.x - player.position.x, rz = e.position.z - player.position.z;
+                const t = rx * fireDir.x + rz * fireDir.z;
+                if (t < 0.5 || t > 60) continue;
+                const px = rx - fireDir.x * t, pz = rz - fireDir.z * t;
+                if (px * px + pz * pz < rr) { hot = true; break; }
+              }
+              world.crosshairEl.classList.toggle('hot', hot);
+            }
           }
           if (shouldFire) attemptFire(player, fireDir, false);
         } else {

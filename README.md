@@ -28,7 +28,7 @@ Edit the `TOONSHOOTER_CONFIG` block near the top of **both** `public/index.html`
 
 ```js
 window.TOONSHOOTER_CONFIG = {
-  X_URL: 'https://x.com/toonshooterfun',
+  X_URL: 'https://x.com/toonshooter',
   PUMP_URL: 'https://pump.fun',      // replace with the live pump.fun coin page
   CONTRACT_ADDRESS: '',              // paste the mint address once the coin launches
   RPC_URL: 'https://api.mainnet-beta.solana.com'

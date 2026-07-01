@@ -63,7 +63,7 @@ Edit **`public/toonshooter/index.html`** — find the `TOONSHOOTER_CONFIG` block
 
 ```js
 window.TOONSHOOTER_CONFIG = {
-  X_URL: 'https://x.com/toonshooterfun',
+  X_URL: 'https://x.com/toonshooter',
   PUMP_URL: 'https://pump.fun',          // your pump.fun coin page when live
   CONTRACT_ADDRESS: '',                   // the mint address when live
   RPC_URL: 'https://api.mainnet-beta.solana.com',
