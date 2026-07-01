@@ -1,0 +1,22 @@
+# Render deploy for the Toonshooter multiplayer relay.
+# Create a new "Web Service" from this repo with root directory = server/.
+services:
+  - type: web
+    name: toonshooter-server
+    runtime: node
+    rootDir: server
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      # Render injects PORT automatically; the server reads it.
+      - key: NODE_VERSION
+        value: "20"
+      # --- Optional real $SOL rewards (leave unset to keep payouts log-only) ---
+      # - key: TREASURY_SECRET_KEY   # JSON array of the treasury Keypair secret
+      #   sync: false                # set as a secret in the Render dashboard
+      # - key: RPC_URL
+      #   value: https://api.mainnet-beta.solana.com
+      # - key: REWARD_SOL
+      #   value: "0.01"

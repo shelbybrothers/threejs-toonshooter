@@ -2,243 +2,292 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tiny Toon Duel</title>
-  <meta name="description" content="A quick-action toon shooter prototype built with Three.js." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Toonshooter · $TOONSHOOTER</title>
+  <meta name="description" content="Toonshooter — a fast-action web3 toon arena shooter built with Three.js. Connect a Solana wallet and play on desktop or mobile." />
+  <meta name="theme-color" content="#F89B0D" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Tiny Toon Duel" />
-  <meta property="og:description" content="A quick-action toon shooter prototype built with Three.js." />
-  <meta property="og:image" content="/toonshooter/design-markedup.jpeg" />
-  <meta property="og:image:width" content="1376" />
-  <meta property="og:image:height" content="768" />
+  <meta property="og:title" content="Toonshooter · $TOONSHOOTER" />
+  <meta property="og:description" content="A fast-action web3 toon arena shooter. Playable on phone." />
+  <meta property="og:image" content="/toonshooterlogo.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Tiny Toon Duel" />
-  <meta name="twitter:description" content="A quick-action toon shooter prototype built with Three.js." />
-  <meta name="twitter:image" content="/toonshooter/design-markedup.jpeg" />
+  <meta name="twitter:title" content="Toonshooter · $TOONSHOOTER" />
+  <meta name="twitter:image" content="/toonshooterlogo.png" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    window.TOONSHOOTER_CONFIG = {
+      X_URL: 'https://x.com/toonshooter',
+      // Replace PUMP_URL with the live pump.fun coin page and CONTRACT_ADDRESS with the mint once the coin launches.
+      PUMP_URL: 'https://pump.fun',
+      CONTRACT_ADDRESS: '',
+      RPC_URL: 'https://api.mainnet-beta.solana.com'
+    };
+  </script>
   <style>
     :root {
-      color-scheme: dark;
-      --bg: radial-gradient(circle at top, #0d1224, #04040b 65%);
-      --card: rgba(6, 13, 33, 0.72);
-      --accent: #8cff75;
-      --accent-2: #79d5ff;
-      --text: #f8fbff;
-      --muted: rgba(248, 251, 255, 0.72);
-      --border: rgba(255, 255, 255, 0.08);
+      --orange: #F89B0D;
+      --orange-deep: #EF6607;
+      --red: #E82709;
+      --red-deep: #B81C06;
+      --gold: #FBD617;
+      --gold-lite: #FFE96B;
+      --ink: #2a1607;
+      --cream: #FFF7EC;
+      --bg: radial-gradient(circle at 50% -12%, #FFD25A 0%, #F89B0D 34%, #EF6607 66%, #D9550A 100%);
+      --font-display: 'Luckiest Guy', 'Bangers', cursive;
+      --font-body: 'Fredoka', system-ui, -apple-system, sans-serif;
     }
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: var(--font-body);
+      color: var(--ink);
       background: var(--bg);
-      color: var(--text);
-      padding: clamp(20px, 4vw, 64px) clamp(20px, 6vw, 96px);
+      background-attachment: fixed;
+      padding: clamp(14px, 3vw, 34px) clamp(16px, 5vw, 72px) 40px;
       display: flex;
       flex-direction: column;
-      gap: clamp(24px, 3vw, 42px);
+      gap: clamp(22px, 4vw, 44px);
+      overflow-x: hidden;
     }
+    /* subtle stars/glow flourish */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(circle at 12% 22%, rgba(255,255,255,0.18) 0 3px, transparent 4px),
+        radial-gradient(circle at 84% 16%, rgba(255,255,255,0.15) 0 4px, transparent 5px),
+        radial-gradient(circle at 68% 78%, rgba(255,255,255,0.12) 0 3px, transparent 4px),
+        radial-gradient(circle at 26% 84%, rgba(255,255,255,0.12) 0 3px, transparent 4px);
+    }
+    header, main, footer { position: relative; z-index: 1; }
+
+    /* ===== Header ===== */
     header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 14px; flex-wrap: wrap;
     }
-    header h1 {
-      font-size: clamp(28px, 4vw, 40px);
-      margin: 0;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand .logo { height: 52px; width: auto; filter: drop-shadow(0 3px 0 rgba(0,0,0,0.25)); }
+    .brand .ticker {
+      font-family: var(--font-display); font-size: clamp(18px, 2.4vw, 26px);
+      color: var(--cream); letter-spacing: 0.02em;
+      text-shadow: 2px 2px 0 var(--ink);
     }
-    header span {
-      font-size: 14px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
+    .coinbar { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; }
+    .btn {
+      appearance: none; cursor: pointer; text-decoration: none;
+      font-family: var(--font-body); font-weight: 700; font-size: 13px;
+      letter-spacing: 0.02em; text-transform: uppercase;
+      color: var(--ink); background: var(--cream);
+      border: 3px solid var(--ink); border-radius: 999px;
+      padding: 9px 16px; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+      box-shadow: 0 4px 0 var(--ink);
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
     }
-    .social-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--text);
-      text-decoration: underline;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .social-link svg {
-      width: 22px;
-      height: 22px;
-      stroke: currentColor;
-      stroke-width: 2;
-      fill: none;
-    }
-    main {
-      display: flex;
-      flex-direction: column;
-      gap: clamp(28px, 5vw, 64px);
-    }
-    .entry {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: clamp(24px, 4vw, 48px);
-      align-items: center;
-    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink); }
+    .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--ink); }
+    .btn svg { width: 16px; height: 16px; fill: currentColor; }
+    .btn.red { background: var(--red); color: var(--cream); }
+    .btn.gold { background: var(--gold); }
+    .btn.wallet { background: var(--gold-lite); }
+    .btn.wallet.connected { background: #7CE86A; }
+
+    /* ===== Hero ===== */
+    main { display: flex; flex-direction: column; gap: clamp(22px, 4vw, 44px); }
+    .hero { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(22px, 4vw, 46px); align-items: center; }
     .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      padding: clamp(20px, 4vw, 36px);
-      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(24px);
+      background: var(--cream); color: var(--ink);
+      border: 4px solid var(--ink); border-radius: 26px;
+      padding: clamp(22px, 4vw, 38px);
+      box-shadow: 10px 12px 0 rgba(42,22,7,0.35);
     }
     .eyebrow {
-      text-transform: uppercase;
-      letter-spacing: 0.28em;
-      font-size: 12px;
-      color: var(--muted);
+      display: inline-block; font-weight: 700; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+      background: var(--gold); color: var(--ink); border: 2px solid var(--ink);
+      border-radius: 999px; padding: 5px 12px; margin-bottom: 14px;
     }
-    h2 {
-      font-size: clamp(30px, 4vw, 48px);
-      margin: 12px 0 16px;
-      line-height: 1.15;
+    h1 {
+      font-family: var(--font-display); font-weight: 400;
+      font-size: clamp(38px, 6.5vw, 74px); line-height: 0.98; margin: 0 0 14px;
+      color: var(--red);
+      text-shadow: 3px 3px 0 var(--ink);
     }
-    p {
-      margin: 0 0 18px;
-      font-size: 16px;
-      color: var(--muted);
-      line-height: 1.6;
+    h1 .b { color: var(--orange-deep); }
+    .lead { font-size: clamp(15px, 1.7vw, 18px); font-weight: 500; line-height: 1.55; margin: 0 0 20px; color: #4a2a10; }
+    .cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .play {
+      font-family: var(--font-display); font-size: clamp(22px, 3vw, 30px); letter-spacing: 0.03em;
+      color: var(--cream); background: var(--red);
+      border: 4px solid var(--ink); border-radius: 999px;
+      padding: 12px 34px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+      box-shadow: 0 7px 0 var(--ink);
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
     }
-    .cta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
+    .play:hover { transform: translateY(-2px); box-shadow: 0 9px 0 var(--ink); }
+    .play:active { transform: translateY(3px); box-shadow: 0 3px 0 var(--ink); }
+    .feature-list { list-style: none; padding: 0; margin: 20px 0 0; display: flex; flex-wrap: wrap; gap: 9px; }
+    .feature-list li {
+      font-size: 13px; font-weight: 600; color: var(--ink);
+      background: #fff; border: 2px solid var(--ink); border-radius: 999px; padding: 6px 13px;
     }
-    .cta a {
-      text-decoration: none;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 14px 22px;
-      border-radius: 999px;
-      color: #031101;
-      background: var(--accent);
-      box-shadow: 0 20px 45px rgba(140, 255, 117, 0.35);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .cta a.secondary {
-      background: transparent;
-      color: var(--accent-2);
-      border: 1px solid rgba(121, 213, 255, 0.5);
-      box-shadow: none;
-    }
-    .cta a:hover {
-      transform: translateY(-2px) scale(1.01);
-    }
-    figure {
-      margin: 0;
-      position: relative;
-    }
-    figure::after {
-      content: '';
-      position: absolute;
-      inset: 6%;
-      border-radius: 22px;
-      background: linear-gradient(135deg, rgba(140, 255, 117, 0.25), rgba(121, 213, 255, 0.25));
-      filter: blur(32px);
-      z-index: 0;
-    }
+    .ca-line { margin-top: 16px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; color: #7a4a1e; word-break: break-all; }
+    .ca-line span { color: var(--ink); }
+
+    figure { margin: 0; position: relative; }
     figure img {
-      position: relative;
-      width: 100%;
-      border-radius: 32px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 40px 90px rgba(7, 8, 17, 0.7);
-      display: block;
+      width: 100%; display: block; border-radius: 24px;
+      border: 4px solid var(--ink);
+      box-shadow: 10px 12px 0 rgba(42,22,7,0.35);
     }
+    .figure-badge {
+      position: absolute; top: -14px; right: -8px; transform: rotate(8deg);
+      font-family: var(--font-display); font-size: 15px; color: var(--ink);
+      background: var(--gold); border: 3px solid var(--ink); border-radius: 12px; padding: 6px 12px;
+      box-shadow: 0 4px 0 var(--ink);
+    }
+
     footer {
-      margin-top: auto;
-      border-top: 1px solid var(--border);
-      padding-top: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      color: var(--muted);
+      margin-top: auto; padding-top: 22px; border-top: 3px dashed rgba(42,22,7,0.4);
+      display: flex; flex-direction: column; gap: 6px;
+      font-size: 13px; font-weight: 500; color: #4a2a10;
     }
-    footer h3 {
-      margin: 0;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      font-size: 13px;
-      color: var(--text);
+    footer a { color: var(--red-deep); font-weight: 700; text-decoration: underline; }
+
+    #toast {
+      position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px);
+      font-family: var(--font-body); font-weight: 700; font-size: 14px;
+      background: var(--ink); color: var(--cream); border: 3px solid var(--cream);
+      padding: 10px 18px; border-radius: 14px; opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease; z-index: 200;
     }
-    footer ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 14px;
-    }
-    footer a {
-      color: var(--accent-2);
-      text-decoration: underline;
-    }
-    @media (max-width: 720px) {
-      body {
-        padding: 16px;
-      }
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .entry {
-        grid-template-columns: 1fr;
-      }
-      .cta a {
-        flex: 1;
-        text-align: center;
-      }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 780px) {
+      header { flex-direction: column; align-items: flex-start; }
+      .hero { grid-template-columns: 1fr; }
+      .cta { }
     }
   </style>
 </head>
-  <body>
-	  <header>
-	    <h1>Tiny Toon Duel</h1>
-	    <span>Three.js Prototype</span>
-	    
-	  </header>
-	
-	  <main>
-	    <div class="entry">
-	      <section class="card">
-	        <p class="eyebrow">Arcade Shooter Prototype</p>
-	        <h2>Duel in a tiny toon arena.</h2>
-	        <p>
-	          Tiny Toon Duel is a quick-action shooter built with Three.js. Dodge incoming fire, keep your aim steady,
-	          and try to outlast the chaos.
-	        </p>
-		        <div class="cta">
-		          <a href="/toonshooter/">Play Tiny Toon Duel</a>
-		        </div>
-		      </section>
-	
-	      <figure>
-	        <img src="/toonshooter/design-markedup.jpeg" alt="Tiny Toon Duel design" loading="lazy" />
-	      </figure>
-	    </div>
-	  </main>
+<body>
+  <header>
+    <div class="brand">
+      <img class="logo" src="/toonshooterlogo.png" alt="Toonshooter" />
+      <span class="ticker">$TOONSHOOTER</span>
+    </div>
+    <div class="coinbar">
+      <button id="btnConnect" class="btn wallet" type="button">Connect Wallet</button>
+      <a id="btnX" class="btn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h5.3l4 5.5L16.9 3H21l-6.5 8.3L21 21h-5.3l-4.3-5.9L7 21H3l6.6-8.7z"/></svg>
+        Follow on X
+      </a>
+      <a id="btnBuy" class="btn gold" href="#" target="_blank" rel="noopener">Buy on pump.fun</a>
+      <button id="btnCopyCA" class="btn" type="button">Copy CA</button>
+    </div>
+  </header>
 
-	  <footer>
-	    <span>© 2025 · Built by <a class="social-link" href="https://x.com/chongdashu" target="_blank" rel="noreferrer">
-	      <svg viewBox="0 0 24 24" aria-hidden="true">
-	        <path d="M3 3h5.3l4 5.5L16.9 3H21l-6.5 8.3L21 21h-5.3l-4.3-5.9L7 21H3l6.6-8.7z" />
-	      </svg>
-	      chongdashu
-	    </a></span>
-	  </footer>
+  <main>
+    <div class="hero">
+      <section class="card">
+        <span class="eyebrow">Web3 Toon Arena Shooter</span>
+        <h1>BLAST INTO<br>THE <span class="b">TOON</span> ARENA!</h1>
+        <p class="lead">
+          Toonshooter is a fast, chaotic arena shooter built with Three.js. Dash, dodge and out-gun
+          your rivals — solo vs CPU or 4-player free-for-all. Connect a Solana wallet and jump in.
+        </p>
+        <div class="cta">
+          <a class="play" href="/toonshooter/">▶ PLAY NOW</a>
+        </div>
+        <ul class="feature-list">
+          <li>🎮 Desktop + 📱 Mobile</li>
+          <li>👛 Solana wallet</li>
+          <li>💥 1v1 &amp; 4-player FFA</li>
+          <li>⚡ Dash · Reload · Grenades</li>
+          <li>🏆 Win $SOL rewards</li>
+        </ul>
+        <div class="ca-line">CA: <span id="caValue">coming soon</span></div>
+      </section>
+
+      <figure>
+        <span class="figure-badge">POW!</span>
+        <img src="/toonshooter/design-markedup.jpeg" alt="Toonshooter arena" loading="lazy" />
+      </figure>
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 Toonshooter · <a id="footX" href="#" target="_blank" rel="noopener">x.com/toonshooterfun</a></span>
+    <span style="opacity:0.7">A web3 rebrand of an open-source Three.js toon-shooter prototype.</span>
+  </footer>
+
+  <div id="toast" role="status"></div>
+
+  <script>
+    (function () {
+      const CFG = window.TOONSHOOTER_CONFIG || {};
+      const $ = (id) => document.getElementById(id);
+      const toastEl = $('toast');
+      let toastTimer = null;
+      function showToast(msg) {
+        if (!toastEl) return;
+        toastEl.textContent = msg; toastEl.classList.add('show');
+        clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+      }
+      const short = (a) => a ? a.slice(0, 4) + '…' + a.slice(-4) : '';
+
+      const xBtn = $('btnX'); if (xBtn) xBtn.href = CFG.X_URL || 'https://x.com';
+      const footX = $('footX'); if (footX) footX.href = CFG.X_URL || 'https://x.com';
+      const buyBtn = $('btnBuy'); if (buyBtn) buyBtn.href = CFG.PUMP_URL || 'https://pump.fun';
+      const caValue = $('caValue'); if (caValue) caValue.textContent = CFG.CONTRACT_ADDRESS || 'coming soon';
+
+      const copyBtn = $('btnCopyCA');
+      if (copyBtn) copyBtn.addEventListener('click', async () => {
+        if (!CFG.CONTRACT_ADDRESS) { showToast('Contract address coming soon'); return; }
+        try { await navigator.clipboard.writeText(CFG.CONTRACT_ADDRESS); showToast('Contract address copied'); }
+        catch { showToast('Copy failed — long-press to copy'); }
+      });
+
+      function getProvider() {
+        if (window.phantom && window.phantom.solana) return window.phantom.solana;
+        if (window.solana) return window.solana;
+        if (window.solflare && window.solflare.isSolflare) return window.solflare;
+        if (window.backpack) return window.backpack;
+        return null;
+      }
+      const connectBtn = $('btnConnect');
+      function setConnected(pk) {
+        if (!connectBtn) return;
+        connectBtn.textContent = short(pk); connectBtn.classList.add('connected'); connectBtn.title = pk;
+        try { localStorage.setItem('toonshooter_wallet', pk); } catch {}
+        fetchBalance(pk);
+      }
+      async function fetchBalance(pk) {
+        if (!CFG.RPC_URL || !connectBtn) return;
+        try {
+          const res = await fetch(CFG.RPC_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'getBalance', params: [pk] }) });
+          const data = await res.json();
+          const lamports = data && data.result && data.result.value;
+          if (typeof lamports === 'number') connectBtn.textContent = short(pk) + ' · ' + (lamports / 1e9).toFixed(2) + ' SOL';
+        } catch {}
+      }
+      async function connect() {
+        const p = getProvider();
+        if (!p) { showToast('No Solana wallet found — opening Phantom'); window.open('https://phantom.app/', '_blank', 'noopener'); return; }
+        try { const res = await p.connect(); const pk = ((res && res.publicKey) || p.publicKey); if (pk) setConnected(pk.toString()); }
+        catch { showToast('Wallet connection cancelled'); }
+      }
+      if (connectBtn) connectBtn.addEventListener('click', connect);
+      window.addEventListener('load', () => {
+        const p = getProvider(); if (!p || !p.connect) return;
+        p.connect({ onlyIfTrusted: true }).then((res) => { const pk = ((res && res.publicKey) || p.publicKey); if (pk) setConnected(pk.toString()); }).catch(() => {});
+      });
+    })();
+  </script>
 </body>
 </html>

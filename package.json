@@ -1,0 +1,10 @@
+{
+  "name": "toonshooter",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Toonshooter ($TOONSHOOTER) — web3 toon arena shooter (static, Vercel-ready).",
+  "scripts": {
+    "dev": "python3 -m http.server 5344 --directory public",
+    "start": "python3 -m http.server 5344 --directory public"
+  }
+}
