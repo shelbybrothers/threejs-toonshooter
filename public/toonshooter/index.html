@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-  <title>Toonshooter · $TOONSHOOTER</title>
+  <title>Toonshooter · $SHOOTER</title>
   <meta name="description" content="Toonshooter — a fast-action web3 toon arena shooter. Connect a Solana wallet and play on desktop or mobile." />
   <meta name="theme-color" content="#04040b" />
-  <meta property="og:title" content="Toonshooter · $TOONSHOOTER" />
+  <meta property="og:title" content="Toonshooter · $SHOOTER" />
   <meta property="og:description" content="Fast-action web3 toon arena shooter. Playable on phone." />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" type="image/png" href="../favicon.png" />
@@ -1107,8 +1107,8 @@
 	  window.TOONSHOOTER_CONFIG = {
 	    X_URL: 'https://x.com/toonshooter',
 	    // Replace PUMP_URL with the live pump.fun coin page and CONTRACT_ADDRESS with the mint once the coin launches.
-	    PUMP_URL: 'https://pump.fun',
-	    CONTRACT_ADDRESS: '',
+	    PUMP_URL: 'https://pump.fun/coin/AHxrdCvnF4z7RptZ3w3TcPARufv3BjteYzeptxkCpump',
+	    CONTRACT_ADDRESS: 'AHxrdCvnF4z7RptZ3w3TcPARufv3BjteYzeptxkCpump',
 	    RPC_URL: 'https://api.mainnet-beta.solana.com',
 	    // Multiplayer relay. Leave null to auto-derive ws://<host>:8845 in dev; set to your
 	    // Render/host wss:// URL in production. BOT_TARGET = total combatants per match (humans fill first).
@@ -1165,7 +1165,7 @@
               <a id="btnX" class="coinbtn" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h5.3l4 5.5L16.9 3H21l-6.5 8.3L21 21h-5.3l-4.3-5.9L7 21H3l6.6-8.7z"/></svg> X</a>
               <a id="btnBuy" class="coinbtn buy" href="#" target="_blank" rel="noopener">Buy</a>
               <button id="btnCopyCA" class="coinbtn" type="button">Copy CA</button>
-              <span class="coinbar-ca-inline">$TOONSHOOTER · <span id="caValue">CA soon</span></span>
+              <span class="coinbar-ca-inline">$SHOOTER · <span id="caValue">CA soon</span></span>
             </div>
           </div>
 
@@ -1223,7 +1223,7 @@
           <div class="lobby-id">
             <input id="lobbyName" maxlength="20" placeholder="Your name" autocomplete="off" />
             <button id="lobbyWallet" class="coinbtn wallet" type="button">Connect Wallet</button>
-            <label class="commit-toggle"><input type="checkbox" id="lobbyCommit" /> Commit — win $TOONSHOOTER</label>
+            <label class="commit-toggle"><input type="checkbox" id="lobbyCommit" /> Commit — win $SHOOTER</label>
           </div>
           <div id="roomList" class="room-list"></div>
           <div class="lobby-note">Committed winners earn a $SOL reward (needs a connected wallet). Uncommitted players still play for free.</div>

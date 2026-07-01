@@ -1,4 +1,4 @@
-# Toonshooter · $TOONSHOOTER
+# Toonshooter · $SHOOTER
 
 A fast-action **web3 toon arena shooter** built with Three.js — solo vs CPU or 4-player free-for-all, playable on **desktop and mobile**. Connect a Solana wallet, follow on X, and jump into the arena.
 
@@ -10,7 +10,7 @@ A fast-action **web3 toon arena shooter** built with Three.js — solo vs CPU or
 
 ## What's new in this rebrand
 
-- **Branding** — Toonshooter / `$TOONSHOOTER` across the landing page and in-game menu.
+- **Branding** — Toonshooter / `$SHOOTER` across the landing page and in-game menu.
 - **Solana wallet** — identity-only connect (Phantom / Solflare / Backpack), auto-reconnect, live SOL balance. No transactions are ever requested.
 - **Coin bar** — Follow on X, Buy on pump.fun, and Copy-CA buttons, wired from a single config block.
 - **Mobile support** — twin-stick touch controls (left = move, right = aim + hold-to-fire), on-screen action buttons (Dash / Reload / Grenade / Kick / Weapon), tap-to-start, tap-to-resume, and a portrait "rotate your phone" hint. Controls only appear during play.
